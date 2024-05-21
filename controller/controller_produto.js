@@ -140,8 +140,75 @@ const setInserirNovoProduto = async function (dadosProduto, contentType ){
 
 }
 
+const setExcluirProduto = async(id) => {
+    try {
+      //Recebe o id do filme em uma variável local
+      let idProduto = id
+ 
+      //Validação para verificar se o ID é válido (vazio, indefinido ou não numérico)
+      if(idProduto == '' || idProduto == undefined || isNaN(idProduto)){
+          return message.ERROR_INVALID_ID //400
+      }else{
+             let produtoDeletado = await produtoDAO.deleteProduto(idProduto)
+  
+             if(produtoDeletado){
+                 return message.SUCCESS_DELETED_ITEM
+             }else{
+                 return message.ERROR_INTERNAL_SERVER_DB //500
+             }
+     }
+    } catch (error) {
+     return message.ERROR_INTERNAL_SERVER //500
+    }
+ }
+
+ const setAtualizarProduto = async(id, dadosProduto, contentType) => {
+    try {
+        let idProduto = id
+        console.log("Hello World !");
+        if(String(contentType).toLowerCase() == 'application/json'){
+            if(idProduto == '' || idProduto == null || idProduto == undefined || isNaN(idProduto)){
+                return message.ERROR_INVALID_ID
+            }else{
+                let produtoAtt
+
+                if(dadosProduto.nome == ''                     || dadosProduto.nome == undefined            || dadosProduto.nome == null            || dadosProduto.nome.length > 45       ||
+                dadosProduto.valor == ''                  || dadosProduto.valor == undefined         || dadosProduto.valor == null         || 
+                dadosProduto.foto                
+                ){
+                    return message.ERROR_INVALID_REQUIRED_FIELDS
+                }else{
+                    let idVerify = await generoDAO.selectGeneroById(idGenero)
+
+                    if(idVerify.length > 0){
+                        let att = await generoDAO.updateGenero(id, dadosGenero)
+    
+                        if(att){
+                            generoAtt.genero = dadosGenero
+                            generoAtt.status = message.SUCCESS_UPDATED_ITEM.status
+                            generoAtt.status_code = message.SUCCESS_UPDATED_ITEM.status_code
+                            generoAtt.message = message.SUCCESS_UPDATED_ITEM.message
+
+                            return generoAtt
+                        }else{
+                            return message.ERROR_INTERNAL_SERVER_DB
+                        }
+                    }else{
+                        return message.ERROR_NOT_FOUND
+                    }
+                }
+            }
+        }else{
+            return message.ERROR_UNSUPORTED_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 module.exports = {
     getListarProdutos,
     getBuscarProdutoId,
-    setInserirNovoProduto
+    setInserirNovoProduto,
+    setExcluirProduto
 };

@@ -86,15 +86,15 @@ const bodyParserJSON = bodyParser.json()
         response.json(resultDadosNovoProduto)
     })
 
-    // //EndPoint: Ele deleta os dados pelo id 
-    // app.delete('/v2/acmeFilmes/filme/:id', cors(), async function(request, response, next){
-    //     let idFilme = request.params.id
+     //EndPoint: Ele deleta os dados pelo id 
+    app.delete('/v2/lanchonete/produto/:id', cors(), async function(request, response, next){
+        let idProduto = request.params.id
 
-    //     let dadosFilme = await controllerFilmes.setExcluirFilme(idFilme)
+        let dadosProduto = await controllerProduto.setExcluirProduto(idProduto)
 
-    //     response.status(dadosFilme.status_code)
-    //     response.json(dadosFilme)
-    // })
+        response.status(dadosProduto.status_code)
+        response.json(dadosProduto)
+    })
 
     // app.put('/v2/acmeFilmes/filme/:id', cors(), bodyParserJSON, async function(request, response){
     //     let contentType = request.headers['content-type']
